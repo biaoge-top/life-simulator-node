@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人生模拟器 · 文字版</title>
+  <link rel="stylesheet" href="styles.css?v=16" />
+</head>
+<body>
+  <!-- ============ 开局屏 ============ -->
+  <section id="start-screen" class="screen screen--start active">
+    <div class="start-inner">
+      <div class="start-badge">AI 驱动 · 每局人生独一无二</div>
+      <h1 class="start-title">人生模拟器</h1>
+      <p class="start-subtitle">从降生到暮年，每一次抉择都在改写你的命运轨迹</p>
+
+      <div class="start-features">
+        <div class="feature"><span class="feature-ic">◷</span><p>完整生命周期<br /><small>婴儿 → 暮年九大阶段</small></p></div>
+        <div class="feature"><span class="feature-ic">✦</span><p>AI 实时生成<br /><small>事件 / 选项 / 结局无固定模板</small></p></div>
+        <div class="feature"><span class="feature-ic">⚖</span><p>强因果数值<br /><small>七维属性决定人生走向</small></p></div>
+        <div class="feature"><span class="feature-ic">♾</span><p>多结局轮回<br /><small>传奇 / 顺遂 / 坎坷 / 悲剧</small></p></div>
+      </div>
+
+      <div class="start-actions">
+        <button id="btn-new-life" class="btn btn-primary btn-lg">开启新人生</button>
+        <button id="btn-continue" class="btn btn-ghost btn-lg" disabled>继续上一段人生</button>
+      </div>
+      <div class="start-links">
+        <a id="open-gallery-start" class="link-btn">结局图鉴 <b id="gallery-count">0</b></a>
+        <span class="link-dot">·</span>
+        <a id="open-settings-start" class="link-btn">API 设置</a>
+      </div>
+      <p class="start-tip">内容由 DeepSeek 大模型实时生成，加载剧情需联网，请耐心等待数秒</p>
+    </div>
+  </section>
+
+  <!-- ============ 游戏主界面 ============ -->
+  <section id="game-screen" class="screen screen--game">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="logo-mark">人</span>
+        <span class="logo-text">人生模拟器</span>
+      </div>
+      <div class="topbar-center">
+        <div class="age-badge">
+          <span id="hud-age">0</span><i>岁</i>
+        </div>
+        <div class="stage-badge" id="hud-stage">婴儿期</div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="btn-save" title="存档">存档</button>
+        <button class="icon-btn" id="btn-load" title="读档">读档</button>
+        <button class="icon-btn" id="btn-history" title="人生履历">履历</button>
+        <button class="icon-btn" id="btn-gallery" title="结局图鉴">图鉴</button>
+        <button class="icon-btn" id="btn-settings" title="设置">设置</button>
+        <button class="icon-btn icon-btn-danger" id="btn-restart" title="重新开始">重开</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- 属性面板 -->
+      <aside class="attrs-panel">
+        <div class="profile-card">
+          <div class="profile-row">
+            <span class="profile-label">性别</span>
+            <span class="profile-value" id="profile-gender">—</span>
+          </div>
+          <div class="profile-row profile-talents">
+            <span class="profile-label">天赋</span>
+            <div class="talent-chips" id="profile-talents"></div>
+          </div>
+        </div>
+
+        <div class="bars" id="attr-bars"></div>
+
+        <div class="lifespan-card">
+          <div class="lifespan-head">
+            <span>人生进度</span>
+            <span id="lifespan-text">0 / 85 岁</span>
+          </div>
+          <div class="lifespan-track"><div class="lifespan-fill" id="lifespan-fill"></div></div>
+          <div class="stage-dots" id="stage-dots"></div>
+        </div>
+      </aside>
+
+      <!-- 剧情区 -->
+      <section class="story-area">
+        <div id="event-card" class="event-card">
+          <!-- 动态渲染 -->
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <!-- ============ 结局屏 ============ -->
+  <section id="ending-screen" class="screen screen--ending">
+    <div class="ending-inner">
+      <div class="ending-eyebrow">人生落幕</div>
+      <h1 class="ending-title" id="ending-title">寿终正寝</h1>
+      <div class="ending-meta">
+        <span id="ending-age">享年 85 岁</span>
+        <span class="link-dot">·</span>
+        <span id="ending-gender"></span>
+        <span class="link-dot">·</span>
+        <span id="ending-tier"></span>
+      </div>
+
+      <div class="ending-summary" id="ending-summary"></div>
+
+      <div class="ending-eval">
+        <div class="ending-eval-label">墓志铭 · 一生评价</div>
+        <p id="ending-evaluation"></p>
+      </div>
+
+      <div class="ending-block">
+        <div class="ending-block-label">人生高光与关键节点</div>
+        <ul class="highlight-list" id="ending-highlights"></ul>
+      </div>
+
+      <div class="ending-block">
+        <div class="ending-block-label">最终属性</div>
+        <div class="ending-attrs" id="ending-attrs"></div>
+      </div>
+
+      <div class="ending-actions">
+        <button id="btn-reincarnate" class="btn btn-primary btn-lg">再活一次</button>
+        <button id="btn-ending-history" class="btn btn-ghost btn-lg">查看完整履历</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 弹窗：履历 ============ -->
+  <div class="modal-mask" id="modal-history">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>人生履历</h3>
+        <button class="modal-close" data-close="modal-history">×</button>
+      </div>
+      <div class="modal-body" id="history-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ 弹窗：结局图鉴 ============ -->
+  <div class="modal-mask" id="modal-gallery">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>结局图鉴</h3>
+        <button class="modal-close" data-close="modal-gallery">×</button>
+      </div>
+      <div class="modal-body" id="gallery-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ 弹窗：设置 ============ -->
+  <div class="modal-mask" id="modal-settings">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h3>接口设置</h3>
+        <button class="modal-close" data-close="modal-settings">×</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">后端接口地址</label>
+        <input type="text" id="input-endpoint" class="form-input" placeholder="api/deepseek.php" />
+        <p class="form-tip">AI 请求由后端 PHP 接口转发，DeepSeek Key 与提示词均保存在服务器上，前端不可见。留空则使用默认地址 <b>api/deepseek.php</b>。</p>
+        <div class="form-actions">
+          <button id="btn-settings-save" class="btn btn-primary">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 加载遮罩 ============ -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loading-text">命运正在书写……</div>
+    </div>
+  </div>
+
+  <!-- ============ Toast ============ -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/config.js?v=16"></script>
+  <script src="js/talents.js?v=16"></script>
+  <script src="js/storage.js?v=16"></script>
+  <script src="js/deepseek.js?v=16"></script>
+  <script src="js/prompts.js?v=16"></script>
+  <script src="js/game.js?v=16"></script>
+  <script src="js/main.js?v=16"></script>
+</body>
+</html>

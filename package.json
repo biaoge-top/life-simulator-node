@@ -1,0 +1,13 @@
+{
+  "name": "life-simulator",
+  "version": "1.0.0",
+  "description": "人生模拟器（文字版）— AI 驱动的文字人生模拟游戏（Node.js 后端）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "license": "MIT"
+}
